@@ -1,12 +1,19 @@
 from uuid import UUID
 
+DEFAULT_UUID = UUID("00000000-0000-0000-0000-000000000000")
+
 
 def create_sale_request(**kwargs):
-    if kwargs.get('creditcard_transaction_collection') or kwargs.get('boleto_transaction_collection'):
+    if kwargs.get('creditcard_transaction_collection') or \
+            kwargs.get('boleto_transaction_collection'):
         request = {
-            'RequestKey': kwargs.get('request_key') or UUID("00000000-0000-0000-0000-000000000000"),
-            'CreditCardTransactionCollection': kwargs.get('creditcard_transaction_collection'),
-            'BoletoTransactionCollection': kwargs.get('boleto_transaction_collection'),
+            'RequestKey': kwargs.get('request_key') or DEFAULT_UUID,
+            'CreditCardTransactionCollection': kwargs.get(
+                'creditcard_transaction_collection'
+            ),
+            'BoletoTransactionCollection': kwargs.get(
+                'boleto_transaction_collection'
+            ),
             'Order': kwargs.get('order'),
             'Buyer': kwargs.get('buyer'),
             'ShoppingCartCollection': kwargs.get('shopping_cart_collection'),
@@ -47,15 +54,16 @@ def billing_address(**kwargs):
     return address
 
 
-def boleto_transaction_options(currency_iso, days_to_add_in_boleto_expiration_date=None):
+def boleto_transaction_options(currency_iso, days_to_add=None):
     options = {
-        'DaysToAddInBoletoExpirationDate': days_to_add_in_boleto_expiration_date,
+        'DaysToAddInBoletoExpirationDate': days_to_add,
         'CurrencyIsoField': currency_iso
     }
     return options
 
 
-def creditcard_transaction(amount_in_cents, creditcard, creditcard_operation='AuthAndCapture', **kwargs):
+def creditcard_transaction(amount_in_cents, creditcard,
+                           creditcard_operation='AuthAndCapture', **kwargs):
     transaction = {
         'CreditCard': creditcard,
         'Options': kwargs.get('options'),
@@ -69,8 +77,8 @@ def creditcard_transaction(amount_in_cents, creditcard, creditcard_operation='Au
     return transaction
 
 
-def creditcard(creditcard_number, creditcard_brand, exp_month, exp_year, holder_name, security_code,
-               billing_address=None):
+def creditcard(creditcard_number, creditcard_brand, exp_month, exp_year,
+               holder_name, security_code, billing_address=None):
     card = {
         'CreditCardNumber': creditcard_number,
         'HolderName': holder_name,
@@ -81,11 +89,11 @@ def creditcard(creditcard_number, creditcard_brand, exp_month, exp_year, holder_
         'BillingAddress': billing_address
     }
     return card
-	
-	
+
+
 def creditcard_instant_buy(instant_buy_key, billing_address=None):
     card = {
-        'InstantBuyKey': instant_buy_key or UUID("00000000-0000-0000-0000-000000000000"),
+        'InstantBuyKey': instant_buy_key or DEFAULT_UUID,
         'BillingAddress': billing_address
     }
     return card
@@ -106,7 +114,8 @@ def creditcard_transaction_options(**kwargs):
     return options
 
 
-def recurrency(frequency, interval, date_to_start_billing, recurrences, one_dollar_auth):
+def recurrency(frequency, interval, date_to_start_billing, recurrences,
+               one_dollar_auth):
     recurrency_dict = {
         'Frequency': frequency,
         'Interval': interval,
@@ -141,7 +150,7 @@ def buyer(document_number, document_type, name, person_type, **kwargs):
         "TwitterId": kwargs.get('twitter_id'),
         "WorkPhone": kwargs.get('work_phone'),
         "BuyerCategory": kwargs.get('buyer_category'),
-        "BuyerKey": kwargs.get('buyer_key') or UUID("00000000-0000-0000-0000-000000000000"),
+        "BuyerKey": kwargs.get('buyer_key') or DEFAULT_UUID,
         "BuyerReference": kwargs.get('buyer_reference'),
         "CreateDateInMerchant": kwargs.get('create_date_in_merchant'),
         "LastBuyerUpdateInMerchant": kwargs.get('last_buyer_update_in_merchant')
@@ -198,7 +207,9 @@ def shopping_cart(**kwargs):
         "EstimatedDeliveryDate": kwargs.get('estimated_delivery_date'),
         "FreightCostInCents": kwargs.get('freight_cost_in_cents'),
         "ShippingCompany": kwargs.get('shipping_company'),
-        "ShoppingCartItemCollection": kwargs.get('shopping_cart_item_collection')
+        "ShoppingCartItemCollection": kwargs.get(
+            'shopping_cart_item_collection'
+        )
     }
     return cart
 
